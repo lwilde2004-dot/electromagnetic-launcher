@@ -41,6 +41,34 @@ The pellet mass is what keeps the energy down. A marble-sized slug weighs 20 to 
 
 **Coil.** 20–24 AWG enamelled copper, 200–400 turns in 4–6 layers, 20–30 mm long, targeting 100–500 µH at 0.3–0.6 Ω.
 
+## Circuit topology
+
+```
+12 V in ──> boost charger ──> capacitor bank ──> coil ──> barrel
+                  │                  │            │
+              auto-stop          bleed R       freewheel
+              at set V          (permanent)      diode
+                                     │            │
+                                    SCR ──────────┘
+                                   (gate trigger)
+```
+
+Five things doing five jobs. The charger steps 12 V up to the bank voltage and stops itself at a set point rather than being watched. The bank stores the shot. The SCR dumps it into the coil on a gate pulse. The freewheel diode gives the coil's collapsing field somewhere to go that is not backwards through the bank, which matters because reverse voltage across an electrolytic is how they fail loudly. The bleed resistor sits across the bank permanently so that a forgotten charge drains on its own.
+
+## What I still have to measure
+
+Everything in this repository is predicted. These are the numbers that will tell me whether the model was any good:
+
+| Quantity | Predicted | How I will measure it |
+|---|---|---|
+| Coil inductance | 100–500 µH | LCR meter, before it goes near the bank |
+| Coil resistance | 0.3–0.6 Ω | Four-wire, because lead resistance is the same order |
+| Pulse duration | ~1–3 ms | Current probe on a scope, single shot |
+| Muzzle velocity | ~59 m/s | Chronograph, or two light gates a known distance apart |
+| Transfer efficiency | 1–5% | Muzzle KE over bank energy, once both are measured |
+
+If the measured efficiency comes out far above a few percent, the model is wrong rather than the build being good, and finding out which is most of the value in doing this.
+
 ## Safety
 
 The capacitor bank is the hazard, not the projectile. A charged bank can deliver a lethal shock in milliseconds and stays charged after the supply is disconnected.
